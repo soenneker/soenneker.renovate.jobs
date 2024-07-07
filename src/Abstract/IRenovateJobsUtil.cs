@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Soenneker.Renovate.Jobs.Abstract;
@@ -7,5 +8,5 @@ namespace Soenneker.Renovate.Jobs.Abstract;
 /// </summary>
 public interface IRenovateJobsUtil
 {
-    ValueTask<string?> AddJob(string username, string repository, string sessionCookie);
+    ValueTask<string?> AddJob(string username, string repository, string sessionCookie, CancellationToken cancellationToken = default);
 }

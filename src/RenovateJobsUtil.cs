@@ -1,6 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Soenneker.Extensions.HttpContent;
@@ -26,7 +27,7 @@ public class RenovateJobsUtil : IRenovateJobsUtil
         _logger = logger;
     }
 
-    public async ValueTask<string?> AddJob(string username, string repository, string sessionCookie)
+    public async ValueTask<string?> AddJob(string username, string repository, string sessionCookie, CancellationToken cancellationToken = default)
     {
         string uri = _mendUri + username + "/" + repository + "/renovate/job/add";
 
@@ -45,19 +46,19 @@ public class RenovateJobsUtil : IRenovateJobsUtil
         HttpResponseMessage? response = null;
         string? responseContent = null;
 
-        HttpClient client = await _renovateClient.Get().NoSync();
+        HttpClient client = await _renovateClient.Get(cancellationToken).NoSync();
 
         try
         {
-            response = await client.SendAsync(requestMessage).NoSync();
+            response = await client.SendAsync(requestMessage, cancellationToken).NoSync();
             response.EnsureSuccessStatusCode();
-            responseContent = await response.Content.ReadAsStringAsync().NoSync();
+            responseContent = await response.Content.ReadAsStringAsync(cancellationToken).NoSync();
         }
         catch (Exception e)
         {
             if (response != null)
             {
-                responseContent = await response.Content.ReadAsStringAsync().NoSync();
+                responseContent = await response.Content.ReadAsStringAsync(cancellationToken).NoSync();
                 _logger.LogError(e, responseContent);
                 return null;
             }
