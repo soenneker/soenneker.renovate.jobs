@@ -29,6 +29,8 @@ public class RenovateJobsUtil : IRenovateJobsUtil
 
     public async ValueTask<string?> AddJob(string username, string repository, string sessionCookie, CancellationToken cancellationToken = default)
     {
+        _logger.LogDebug("Adding Renovate job for repository ({repository})...", repository);
+
         string uri = _mendUri + username + "/" + repository + "/renovate/job/add";
 
         const string content = "{\"selectedBranches\":[]}";
