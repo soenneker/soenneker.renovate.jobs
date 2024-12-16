@@ -41,7 +41,7 @@ public class RenovateJobsUtil : IRenovateJobsUtil
 
         stringContent.AddCookie("mend_session", sessionCookie, uri);
 
-        var requestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
+        using var requestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
         requestMessage.Content = stringContent;
         requestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
