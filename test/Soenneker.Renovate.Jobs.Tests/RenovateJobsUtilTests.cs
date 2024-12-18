@@ -4,7 +4,7 @@ using Soenneker.Facts.Local;
 using Soenneker.Renovate.Jobs.Abstract;
 using Soenneker.Tests.FixturedUnit;
 using Xunit;
-using Xunit.Abstractions;
+
 
 namespace Soenneker.Renovate.Jobs.Tests;
 
