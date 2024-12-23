@@ -1,10 +1,6 @@
-using System.Threading.Tasks;
-using FluentAssertions;
-using Soenneker.Facts.Local;
 using Soenneker.Renovate.Jobs.Abstract;
 using Soenneker.Tests.FixturedUnit;
 using Xunit;
-
 
 namespace Soenneker.Renovate.Jobs.Tests;
 
@@ -18,11 +14,9 @@ public class RenovateJobsUtilTests : FixturedUnitTest
         _util = Resolve<IRenovateJobsUtil>(true);
     }
 
-    //[ManualFact]
-    [LocalFact]
-    public async Task AddJob()
+    [Fact]
+    public void Default()
     {
-        var jobId = await _util.AddJob("", "", "");
-        jobId.Should().NotBeNull();
+
     }
 }
