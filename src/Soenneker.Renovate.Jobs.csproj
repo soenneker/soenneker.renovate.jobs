@@ -44,6 +44,6 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
         <PackageReference Include="Soenneker.Extensions.HttpContent" Version="3.0.507" />
-        <PackageReference Include="Soenneker.Renovate.Client" Version="3.0.709" />
+        <PackageReference Include="Soenneker.Renovate.Client" Version="3.0.711" />
     </ItemGroup>
 </Project>
