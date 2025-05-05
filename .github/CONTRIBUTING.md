@@ -1,4 +1,4 @@
-# Contributing to Soenneker.Renovate.Jobs
+﻿# Contributing to Soenneker.Renovate.Jobs
 
 We're excited that you're interested in contributing!
 
