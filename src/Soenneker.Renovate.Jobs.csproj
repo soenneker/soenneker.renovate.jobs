@@ -41,7 +41,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Soenneker.Extensions.HttpContent" Version="4.0.779" />
+        <PackageReference Include="Soenneker.Extensions.HttpContent" Version="4.0.780" />
         <PackageReference Include="Soenneker.Renovate.Client" Version="4.0.1342" />
     </ItemGroup>
 </Project>
