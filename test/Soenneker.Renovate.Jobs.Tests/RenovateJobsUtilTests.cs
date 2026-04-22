@@ -1,20 +1,19 @@
 using Soenneker.Renovate.Jobs.Abstract;
-using Soenneker.Tests.FixturedUnit;
-using Xunit;
+using Soenneker.Tests.HostedUnit;
 
 namespace Soenneker.Renovate.Jobs.Tests;
 
-[Collection("Collection")]
-public class RenovateJobsUtilTests : FixturedUnitTest
+[ClassDataSource<Host>(Shared = SharedType.PerTestSession)]
+public class RenovateJobsUtilTests : HostedUnitTest
 {
     private readonly IRenovateJobsUtil _util;
 
-    public RenovateJobsUtilTests(Fixture fixture, ITestOutputHelper output) : base(fixture, output)
+    public RenovateJobsUtilTests(Host host) : base(host)
     {
         _util = Resolve<IRenovateJobsUtil>(true);
     }
 
-    [Fact]
+    [Test]
     public void Default()
     {
 
