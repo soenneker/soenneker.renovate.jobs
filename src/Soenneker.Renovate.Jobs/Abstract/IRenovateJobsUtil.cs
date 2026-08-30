@@ -4,17 +4,17 @@ using System.Threading.Tasks;
 namespace Soenneker.Renovate.Jobs.Abstract;
 
 /// <summary>
-/// A utility library for Mend Renovate job related operations
+/// Starts Mend-hosted Renovate jobs for GitHub repositories.
 /// </summary>
 public interface IRenovateJobsUtil
 {
     /// <summary>
-    /// Adds job.
+    /// Starts a Renovate job using an authenticated Mend session.
     /// </summary>
-    /// <param name="username">Receives the decoded username when parsing succeeds.</param>
-    /// <param name="repository">Repository for the add job operation.</param>
-    /// <param name="sessionCookie">Session Cookie for the add job operation.</param>
+    /// <param name="username">The GitHub owner name.</param>
+    /// <param name="repository">The GitHub repository name.</param>
+    /// <param name="sessionCookie">The secret Mend <c>mend_session</c> cookie value.</param>
     /// <param name="cancellationToken">Token used to cancel the operation.</param>
-    /// <returns>A task whose result is the text returned by add Job.</returns>
+    /// <returns>The Mend response body, or <c>null</c> when the request fails.</returns>
     ValueTask<string?> AddJob(string username, string repository, string sessionCookie, CancellationToken cancellationToken = default);
 }

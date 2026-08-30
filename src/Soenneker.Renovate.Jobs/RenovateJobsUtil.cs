@@ -13,7 +13,6 @@ using MediaTypeHeaderValue = System.Net.Http.Headers.MediaTypeHeaderValue;
 
 namespace Soenneker.Renovate.Jobs;
 
-/// <inheritdoc cref="IRenovateJobsUtil"/>
 public sealed class RenovateJobsUtil : IRenovateJobsUtil
 {
     private readonly IRenovateClient _renovateClient;
@@ -31,7 +30,7 @@ public sealed class RenovateJobsUtil : IRenovateJobsUtil
     {
         _logger.LogDebug("Adding Renovate job ({username}/{repository})...", username, repository);
 
-        string uri = _mendUri + username + "/" + repository + "/renovate/job/add";
+        string uri = _mendUri + Uri.EscapeDataString(username) + "/" + Uri.EscapeDataString(repository) + "/renovate/job/add";
 
         const string content = "{\"selectedBranches\":[]}";
 
@@ -45,27 +44,26 @@ public sealed class RenovateJobsUtil : IRenovateJobsUtil
         requestMessage.Content = stringContent;
         requestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-        HttpResponseMessage? response = null;
-        string? responseContent = null;
-
         HttpClient client = await _renovateClient.Get(cancellationToken).NoSync();
 
         try
         {
-            response = await client.SendAsync(requestMessage, cancellationToken).NoSync();
-            response.EnsureSuccessStatusCode();
-            responseContent = await response.Content.ReadAsStringAsync(cancellationToken).NoSync();
+            using HttpResponseMessage response = await client.SendAsync(requestMessage, cancellationToken).NoSync();
+            string responseContent = await response.Content.ReadAsStringAsync(cancellationToken).NoSync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogError("Mend returned {StatusCode} while adding Renovate job ({Username}/{Repository}): {ResponseContent}",
+                    response.StatusCode, username, repository, responseContent);
+                return null;
+            }
+
+            return responseContent;
         }
         catch (Exception e)
         {
-            if (response != null)
-            {
-                responseContent = await response.Content.ReadAsStringAsync(cancellationToken).NoSync();
-                _logger.LogError(e, responseContent);
-                return null;
-            }
+            _logger.LogError(e, "Could not add Renovate job ({Username}/{Repository})", username, repository);
+            return null;
         }
-
-        return responseContent;
     }
 }

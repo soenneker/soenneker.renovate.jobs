@@ -1,38 +1,44 @@
 [![](https://img.shields.io/nuget/v/soenneker.renovate.jobs.svg?style=for-the-badge)](https://www.nuget.org/packages/soenneker.renovate.jobs/)
 [![](https://img.shields.io/github/actions/workflow/status/soenneker/soenneker.renovate.jobs/publish-package.yml?style=for-the-badge)](https://github.com/soenneker/soenneker.renovate.jobs/actions/workflows/publish-package.yml)
 [![](https://img.shields.io/nuget/dt/soenneker.renovate.jobs.svg?style=for-the-badge)](https://www.nuget.org/packages/soenneker.renovate.jobs/)
+[![](https://img.shields.io/github/actions/workflow/status/soenneker/soenneker.renovate.jobs/build-and-test.yml?label=build%20and%20test&style=for-the-badge)](https://github.com/soenneker/soenneker.renovate.jobs/actions/workflows/build-and-test.yml)
 [![](https://img.shields.io/github/actions/workflow/status/soenneker/soenneker.renovate.jobs/codeql.yml?label=CodeQL&style=for-the-badge)](https://github.com/soenneker/soenneker.renovate.jobs/actions/workflows/codeql.yml)
 
 # Soenneker.Renovate.Jobs
 
-A utility library for Mend Renovate job related operations.
+Starts a Mend-hosted Renovate job for a GitHub repository using an authenticated Mend session.
 
-## Install
+## Installation and registration
 
 ```bash
 dotnet add package Soenneker.Renovate.Jobs
 ```
 
-## Quick start
-
 ```csharp
 using Soenneker.Renovate.Jobs.Registrars;
-using Microsoft.Extensions.DependencyInjection;
 
-var services = new ServiceCollection();
-var result = services.AddRenovateJobsUtilAsSingleton();
+services.AddRenovateJobsUtilAsScoped();
 ```
 
-Adds `IRenovateJobsUtil` as a singleton service.
+The scoped jobs utility and client wrapper reuse a singleton cached `HttpClient`. Ending a scope does not destroy the shared client or its cookie container.
 
-## What you get
+## Start a job
 
-- `IRenovateJobsUtil` — A utility library for Mend Renovate job related operations.
-- `RenovateJobsUtilRegistrar` — A utility library for Mend Renovate job related operations.
+```csharp
+using Soenneker.Renovate.Jobs.Abstract;
 
-## API at a glance
+string? response = await renovateJobs.AddJob(
+    username: "soenneker",
+    repository: "example-repository",
+    sessionCookie: mendSessionCookie,
+    cancellationToken);
 
-| API | What it does | Result / important behavior |
-| --- | --- | --- |
-| `RenovateJobsUtilRegistrar.AddRenovateJobsUtilAsSingleton(services)` | Adds `IRenovateJobsUtil` as a singleton service. | The same service collection, so additional registrations can be chained. |
-| `RenovateJobsUtilRegistrar.AddRenovateJobsUtilAsScoped(services)` | Adds `IRenovateJobsUtil` as a scoped service. | The same service collection, so additional registrations can be chained. |
+if (response is null)
+{
+    // The request failed; inspect application logs.
+}
+```
+
+`username` and `repository` are GitHub path segments. `sessionCookie` is sent as the `mend_session` cookie to `developer.mend.io`; treat it as a secret and never persist or log it. The request selects no branch override, allowing Renovate's repository configuration to determine branch behavior.
+
+The returned string is Mend's response body. HTTP and transport failures are logged and return `null`; this package does not deserialize the response into a stable DTO.
