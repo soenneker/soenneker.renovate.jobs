@@ -13,6 +13,7 @@ using MediaTypeHeaderValue = System.Net.Http.Headers.MediaTypeHeaderValue;
 
 namespace Soenneker.Renovate.Jobs;
 
+/// <inheritdoc cref="IRenovateJobsUtil" />
 public sealed class RenovateJobsUtil : IRenovateJobsUtil
 {
     private readonly IRenovateClient _renovateClient;
