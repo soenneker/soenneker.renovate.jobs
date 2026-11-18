@@ -29,7 +29,8 @@ public sealed class RenovateJobsUtil : IRenovateJobsUtil
 
     public async ValueTask<string?> AddJob(string username, string repository, string sessionCookie, CancellationToken cancellationToken = default)
     {
-        _logger.LogDebug("Adding Renovate job ({username}/{repository})...", username, repository);
+        if (_logger.IsEnabled(LogLevel.Debug))
+            _logger.LogDebug("Adding Renovate job ({username}/{repository})...", username, repository);
 
         string uri = _mendUri + Uri.EscapeDataString(username) + "/" + Uri.EscapeDataString(repository) + "/renovate/job/add";
 
